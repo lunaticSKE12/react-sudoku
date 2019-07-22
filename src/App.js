@@ -3,8 +3,22 @@ import logo from './logo.svg';
 import './App.css';
 
 class Cell extends Component {
+  state = {
+    number: 1
+  }
   render() {
-    return (<div className="cell">1</div>)
+    return (
+      <div
+        onClick={(e) => {
+          this.setState({
+            number: (this.state.number + 1) % 5
+          });
+        }}
+        className={`cell ${this.props.isInitial ? 'initial' : ''}`}
+      >
+        {this.state.number !== 0 && this.state.number}
+      </div>
+    );
   }
 }
 
@@ -13,22 +27,22 @@ class App extends Component {
     return (
       <div className="App">
         <div className="board">
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
-          <div className="cell">1</div>
+          <Cell number={3} isInitial />
+          <Cell number={4} />
+          <Cell number={4} />
+          <Cell number={4} />
+          <Cell number={4} isInitial />
+          <Cell number={3} />
+          <Cell number={5} />
+          <Cell number={5} />
+          <Cell number={5} />
+          <Cell number={5} />
+          <Cell number={5} />
+          <Cell number={5} isInitial />
+          <Cell number={5} />
+          <Cell number={5} />
+          <Cell number={5} isInitial />
+          <Cell number={5} />
         </div>
       </div>
     );
