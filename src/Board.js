@@ -29,15 +29,9 @@ const validate = board => {
 
 class Board extends Component {
     state = {
-        board: [[1, 2, 3, 4], [3, 4, 0, 0], [2, 0, 4, 0], [4, 0, 0, 2]],
-        initial: [
-            [true, true, true, true],
-            [true, true, false, false],
-            [true, false, true, false],
-            [true, false, false, true]
-        ],
         statusText: '',
-        timer: 0
+        timer: 0,
+        loading: true
     }
 
     componentDidMount() {
@@ -45,10 +39,30 @@ class Board extends Component {
         this.interval = setInterval(() => {
             this.setState({ timer: this.state.timer + 1 });
         }, 1000);
+        this.restartBoard();
     }
 
     componentWillUnmount() {
         clearInterval(this.interval);
+    }
+
+    restartBoard = () => {
+        this.setState({
+            loading: true
+        });
+
+        fetch("https://us-central1-skooldio-courses.cloudfunctions.net/react_01/random").then(resp => {
+            // console.log(resp)
+            return resp.json();
+        }).then(jsonResponse => {
+            // console.log(jsonResponse)
+            this.setState({
+                board: jsonResponse.board,
+                timer: 0,
+                initial: jsonResponse.board.map((row) => row.map((item) => item !== 0)),
+                loading: false
+            })
+        })
     }
 
     submit = () => {
@@ -67,7 +81,7 @@ class Board extends Component {
                 <p className="timer">Elapsed Time : {this.state.timer} seconds</p>
                 <div className="board">
                     {
-                        this.state.board.map((row, i) =>
+                        !this.state.loading && this.state.board.map((row, i) =>
                             row.map((number, j) =>
                                 <Cell
                                     key={`cell-${i}-${j}`}
@@ -84,6 +98,7 @@ class Board extends Component {
                             ))
                     }
                 </div>
+                <button onClick={this.restartBoard} className="restart-button">Restart</button>
                 <button onClick={this.submit}>Submit</button>
                 <p>{this.state.statusText}</p>
             </div>
